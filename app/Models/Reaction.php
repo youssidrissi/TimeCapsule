@@ -3,68 +3,41 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Reaction extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'profile_picture',
+        'user_id',
+        'capsule_id',
+        'type',
+        'comment_text',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Les valeurs possibles pour le type de réaction.
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
+    const TYPES = [
+        'like',
+        'comment',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // Relation : Une réaction appartient à un utilisateur
+    public function user()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-    public function capsules()
-    {
-        return $this->hasMany(Capsule::class);
+        return $this->belongsTo(User::class);
     }
 
-    // Relation avec les réactions
-    public function reactions()
+    // Relation : Une réaction appartient à une capsule
+    public function capsule()
     {
-        return $this->hasMany(Reaction::class);
-    }
-
-    // Relation avec les notifications
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
-
-    // Relation avec les capsules reçues
-    public function receivedCapsules()
-    {
-        return $this->belongsToMany(Capsule::class, 'capsule_recipients');
+        return $this->belongsTo(Capsule::class);
     }
 }

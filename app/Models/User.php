@@ -3,36 +3,58 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+
+class User extends Authenticatable 
 {
-    use HasFactory;
+    use HasFactory,HasApiTokens, Notifiable;
 
-    // Champs modifiables (facultatif, à configurer selon tes besoins)
-    protected $fillable = ['name', 'email', 'password', 'profile_picture'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'profile_picture',
+    ];
 
-    // Un utilisateur peut avoir plusieurs capsules
+    
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    
+    
+
+    // Relation avec les capsules créées par l'utilisateur
     public function capsules()
     {
         return $this->hasMany(Capsule::class);
     }
 
-    // Un utilisateur peut avoir plusieurs réactions
+    // Relation avec les réactions effectuées par l'utilisateur
     public function reactions()
     {
         return $this->hasMany(Reaction::class);
     }
 
-    // Un utilisateur peut recevoir plusieurs notifications
+    // Relation avec les notifications reçues par l'utilisateur
     public function notifications()
     {
         return $this->hasMany(Notification::class);
     }
 
-    // Un utilisateur peut être destinataire de plusieurs capsules
-    public function capsuleRecipients()
+    // Relation avec les capsules reçues par l'utilisateur
+    public function receivedCapsules()
     {
-        return $this->hasMany(CapsuleRecipient::class);
+        return $this->belongsToMany(Capsule::class, 'capsule_recipients');
     }
 }

@@ -16,4 +16,13 @@ class Content extends Model
     {
         return $this->belongsTo(Capsule::class);
     }
+    public static function isValidFileType($type)
+    {
+        $validTypes = ['text', 'image', 'video', 'audio'];
+        return in_array($type, $validTypes);
+    }
+    public function reactions()
+{
+    return $this->morphMany(Reaction::class, 'reactable');
+}
 }

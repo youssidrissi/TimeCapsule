@@ -23,6 +23,9 @@ class CreateCapsulesTable extends Migration
             $table->enum('type', ['temporelle', 'compte à rebours', 'auto-destructrice']);
             $table->timestamp('open_date')->nullable(); // Date d'ouverture
             $table->timestamps(); // Champs created_at et updated_at
+            $table->timestamp('end_date')->nullable(); // Date de fin
+            $table->enum('status_type', ['envoyée', 'reçue'])->default('envoyée'); // Type de statut : envoyée ou reçue
+
         });
     }
 
