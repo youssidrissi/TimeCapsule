@@ -15,41 +15,14 @@ class CapsuleController extends Controller
     return $this->role === 'admin';
 }
 
-    
-    public function index(Request $request)
+public function index(Request $request)
 {
-    $capsules = Capsule::query();
+    // Récupère toutes les capsules sans aucun filtre
+    $capsules = Capsule::all();
 
-    // Vérifie si l'utilisateur est un admin
-    if ($request->user()->is_admin) {
-        // Si admin, on peut voir toutes les capsules
-        $capsules = $capsules->with('user');
-    } else {
-        // Si non admin, on ne montre que celles de l'utilisateur
-        $capsules = $capsules->where('user_id', $request->user()->id);
-    }
-
-    // Filtre selon le type de capsule (envoyée ou reçue)
-    if ($request->has('status_type')) {
-        if ($request->status_type === 'envoyée') {
-            $capsules = $capsules->where('status_type', 'envoyée');
-        } elseif ($request->status_type === 'reçue') {
-            $capsules = $capsules->where('status_type', 'reçue');
-        }
-    }
-
-    // Filtre selon le statut des capsules reçues
-    if ($request->has('status')) {
-        if ($request->status === 'en_attente') {
-            $capsules = $capsules->where('status', 'En attente');
-        } elseif ($request->status === 'prête_a_ouvrir') {
-            $capsules = $capsules->where('status', 'Prête à ouvrir');
-        }
-    }
-
-    return response()->json($capsules->get());
+    // Renvoie les capsules sous forme de réponse JSON
+    return response()->json($capsules);
 }
-
 
 
     // Affiche une capsule spécifique
